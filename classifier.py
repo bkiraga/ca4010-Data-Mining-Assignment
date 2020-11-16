@@ -20,9 +20,9 @@ def convertHourToSec(time_in_hours):
     if sec[0] == "0":
         sec = sec[1]
     if min[0] == "0":
-        sec = sec[1]
+        min = min[1]
     if hour[0] == "0":
-        sec = sec[1]
+        hour = hour[1]
     sec = int(sec)
     min = int(min)
     hour = int(hour)
@@ -46,15 +46,23 @@ def timeAwayFromNight(sunrise, sunset, time):
         result = sunset - time
     return result
 
-# data['Newcolumn'] = 
+def test(a,b):
+    return a+b
+
+# data['Newcolumn'] = data.apply(timeAwayFromNight(data['TimeSunRise'], data['TimeSunSet'], data['Time']))
 # data['NewColumn'].apply(timeAwayFromNight(data['TimeSunRise'], data['TimeSunSet'], data['Time']))
+# data['Newcolumn'] = data.apply(lambda row: test(row.Humidity,1), axis=1)
+data['Newcolumn'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
+# data['Newcolumn'] = data.apply(lambda row: convertHourToSec(row.Time), axis=1)
+# print(convertHourToSec("01:12:04"))
 
-del data['UNIXTime']
-del data['Data']
-del data['Time']
-del data['TimeSunRise']
-del data['TimeSunSet']
+# del data['UNIXTime']
+# del data['Data']
+# del data['Time']
+# del data['TimeSunRise']
+# del data['TimeSunSet']
 
-
-print(data.head(10))
+print(data.loc[[731]])
+# print(data.head(400))
+# print(data.tail(50))
 print(data.shape)
