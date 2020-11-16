@@ -33,6 +33,9 @@ def convertHourToSec(time_in_hours):
 # create a column with a value showing the amount of seconds away from sunset/sunrise
 
 def timeAwayFromNight(sunrise, sunset, time):
+    sunrise = convertHourToSec(sunrise)
+    sunset = convertHourToSec(sunset)
+    time = convertHourToSec(time)
     result = 0
     midpoint = (sunrise + sunset)/2
     if time <= sunrise or time >= sunset:
@@ -43,6 +46,8 @@ def timeAwayFromNight(sunrise, sunset, time):
         result = sunset - time
     return result
 
+# data['Newcolumn'] = 
+# data['NewColumn'].apply(timeAwayFromNight(data['TimeSunRise'], data['TimeSunSet'], data['Time']))
 
 del data['UNIXTime']
 del data['Data']
