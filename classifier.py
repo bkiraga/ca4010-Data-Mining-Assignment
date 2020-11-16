@@ -5,5 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-dataset = pd.read_csv("dataset")
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+dataset = pd.read_csv("data/SolarPrediction.csv")
+print(dataset.head(20))
+print(dataset.shape)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
