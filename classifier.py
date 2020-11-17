@@ -1,18 +1,12 @@
-from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier, KNeighborsRegressor
-from sklearn.model_selection import train_test_split
-from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import scipy
+from sklearn import preprocessing, model_selection, neighbors
+from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier, KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from datetime import datetime
 
-
-data = pd.read_csv("data/SolarPrediction.csv")
-
-# check for null values
-print(data.isnull().sum())
-
-#time_in_hours = string representation of time eg 18:45:17 (hour:min:sec)
-#it gets converted to seconds
 def convertHourToSec(time_in_hours):
     sec = time_in_hours[-2:]
     min = time_in_hours[3:5]
@@ -30,8 +24,6 @@ def convertHourToSec(time_in_hours):
     return sec + (min*60) + (hour*60*60)
 
 
-# create a column with a value showing the amount of seconds away from sunset/sunrise
-
 def timeAwayFromNight(sunrise, sunset, time):
     sunrise = convertHourToSec(sunrise)
     sunset = convertHourToSec(sunset)
@@ -46,23 +38,30 @@ def timeAwayFromNight(sunrise, sunset, time):
         result = sunset - time
     return result
 
-def test(a,b):
-    return a+b
+data = pd.read_csv("data/SolarPrediction.csv")
 
-# data['Newcolumn'] = data.apply(timeAwayFromNight(data['TimeSunRise'], data['TimeSunSet'], data['Time']))
-# data['NewColumn'].apply(timeAwayFromNight(data['TimeSunRise'], data['TimeSunSet'], data['Time']))
-# data['Newcolumn'] = data.apply(lambda row: test(row.Humidity,1), axis=1)
-data['Newcolumn'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
-# data['Newcolumn'] = data.apply(lambda row: convertHourToSec(row.Time), axis=1)
-# print(convertHourToSec("01:12:04"))
+# check for null values
+print(data.isnull().sum())
 
-# del data['UNIXTime']
-# del data['Data']
-# del data['Time']
-# del data['TimeSunRise']
-# del data['TimeSunSet']
+data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
+data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
 
-print(data.loc[[731]])
-# print(data.head(400))
-# print(data.tail(50))
-print(data.shape)
+x = np.array(data.drop(['Radiation'],1))
+y = np.array(data['Radiation'])
+
+x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+
+classifier = neighbors.KNeighborsClassifier(n_neighbors=10)
+# classifier = neighbors.KNeighborsClassifier()
+classifier.fit(x_train, y_train)
+accuracy = classifier.score(x_test, y_test)
+print(accuracy)
+
+example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
+prediction = classifier.predict(example)
+print(prediction)
+
+# print(data.loc[[731]])
+# print(data.head(30))
+# print(data.tail(30))
+# print(data.shape)
