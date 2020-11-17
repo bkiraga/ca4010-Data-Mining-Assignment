@@ -38,6 +38,19 @@ def timeAwayFromNight(sunrise, sunset, time):
         result = sunset - time
     return result
 
+def rankSolarRadiationtoCategories(row, min, max):
+    mid = (max + min)/2
+    quart = mid/2
+    if row < quart:
+        return 1
+    elif row >= quart and row <= mid:
+        return 2
+    elif row > mid and row <= (quart*3):
+        return 3
+    else:
+        return 4
+
+
 data = pd.read_csv("data/SolarPrediction.csv")
 
 # check for null values
@@ -45,6 +58,9 @@ print(data.isnull().sum())
 
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
 data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
+max = data['Radiation'].max()
+min = data['Radiation'].min()
+data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Radiation, min, max), axis=1)
 
 x = np.array(data.drop(['Radiation'],1))
 y = np.array(data['Radiation'])
@@ -52,16 +68,17 @@ y = np.array(data['Radiation'])
 x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
 
 classifier = neighbors.KNeighborsClassifier(n_neighbors=10)
-# classifier = neighbors.KNeighborsClassifier()
+classifier = neighbors.KNeighborsClassifier()
 classifier.fit(x_train, y_train)
 accuracy = classifier.score(x_test, y_test)
 print(accuracy)
 
 example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
+example = example.reshape(1,-1)
 prediction = classifier.predict(example)
 print(prediction)
 
 # print(data.loc[[731]])
-# print(data.head(30))
+# print(data.head(10))
 # print(data.tail(30))
 # print(data.shape)
