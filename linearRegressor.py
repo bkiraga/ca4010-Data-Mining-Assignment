@@ -71,29 +71,9 @@ x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_s
 linReg= LinearRegression()
 linReg.fit(x_train, y_train)
 linReg_pred = linReg.predict(x_test)
-print('R^2 score '+r2_score(y_test, linReg_pred))
+print('R^2 score '+str(r2_score(y_test, linReg_pred)))
 
 example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
 example = example.reshape(1,-1)
 prediction = linReg.predict(example)
 print(prediction)
-
-
-# data['linReg_pred'] = linReg.predict(x_test)
-
-from bokeh.plotting import figure, output_notebook, show
-from bokeh.models import Range1d
-output_notebook()
-
-p = figure(plot_width=800, 
-           plot_height=400,
-           title="Solar Irradiance Predictions",
-           x_axis_label='Date and Time',
-           y_axis_label='Solar Irradiance',
-           x_axis_type="datetime")
-p.x_range = Range1d(data.index[0], data.index[600])
-p.y_range = Range1d(-100, 1800, bounds=(-100, 1800))
-p.line(data.index, data['Radiation'], legend='Observed Solar Irradiance', line_width=1)
-p.line(data.index, data['linReg_pred'], legend='Predicted Solar Irradiance', line_width=1, line_color="red")
-
-show(p, notebook_handle = True)

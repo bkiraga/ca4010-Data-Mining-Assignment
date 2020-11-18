@@ -71,10 +71,9 @@ x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_s
 RanForReg = RandomForestRegressor()
 RanForReg.fit(x_train, y_train)
 RanForReg_pred= RanForReg.predict(x_test)
-print('R^2 score '+ r2_score(y_test, RanForReg_pred))
+print('R^2 score '+ str(r2_score(y_test, RanForReg_pred)))
 
 example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
 example = example.reshape(1,-1)
 prediction = RanForReg.predict(example)
 print(prediction)
-
