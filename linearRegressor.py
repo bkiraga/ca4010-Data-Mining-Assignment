@@ -38,19 +38,6 @@ def timeAwayFromNight(sunrise, sunset, time):
         result = sunset - time
     return result
 
-def rankSolarRadiationtoCategories(row, min, max):
-    mid = (max + min)/2
-    quart = mid/2
-    if row < quart:
-        return 1
-    elif row >= quart and row <= mid:
-        return 2
-    elif row > mid and row <= (quart*3):
-        return 3
-    else:
-        return 4
-
-
 data = pd.read_csv("data/SolarPrediction.csv")
 
 # check for null values
@@ -61,10 +48,6 @@ data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], in
 
 # remove outlier
 data = data.drop(6465)
-
-max = data['Radiation'].max()
-min = data['Radiation'].min()
-data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Radiation, min, max), axis=1)
 
 x = np.array(data.drop(['Radiation'],1))
 y = np.array(data['Radiation'])
