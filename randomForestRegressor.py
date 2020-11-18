@@ -6,7 +6,6 @@ from sklearn import preprocessing, model_selection, neighbors
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
-from datetime import datetime
 
 def convertHourToSec(time_in_hours):
     sec = time_in_hours[-2:]
@@ -59,6 +58,10 @@ data = pd.read_csv("data/SolarPrediction.csv")
 
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
 data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
+
+# remove outlier
+data = data.drop(6465)
+
 max = data['Radiation'].max()
 min = data['Radiation'].min()
 data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Radiation, min, max), axis=1)
