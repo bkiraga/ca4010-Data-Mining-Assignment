@@ -49,17 +49,38 @@ data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], in
 # remove outlier
 data = data.drop(6465)
 
-x = np.array(data.drop(['Radiation'],1))
+# x = np.array(data.drop(['Radiation'],1))
+# y = np.array(data['Radiation'])
+
+# x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+
+# RanForReg = RandomForestRegressor()
+# RanForReg.fit(x_train, y_train)
+# RanForReg_pred= RanForReg.predict(x_test)
+# print('R^2 score '+ str(r2_score(y_test, RanForReg_pred)))
+
+# example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
+# example = example.reshape(1,-1)
+# prediction = RanForReg.predict(example)
+# print(prediction)
+
+x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
+x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
+x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
+x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x6 = data[['Temperature', 'SunElevation']]
+x7 = data[['Pressure', 'Humidity', 'Speed']]
+
+variations = [x1,x2,x3,x4,x5,x6,x7]
+
+
 y = np.array(data['Radiation'])
 
-x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
-
-RanForReg = RandomForestRegressor()
-RanForReg.fit(x_train, y_train)
-RanForReg_pred= RanForReg.predict(x_test)
-print('R^2 score '+ str(r2_score(y_test, RanForReg_pred)))
-
-example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
-example = example.reshape(1,-1)
-prediction = RanForReg.predict(example)
-print(prediction)
+for x in variations:
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+    RanForReg = RandomForestRegressor()
+    RanForReg.fit(x_train, y_train)
+    RanForReg_pred= RanForReg.predict(x_test)
+    print(x.head(0))
+    print(r2_score(y_test, RanForReg_pred))

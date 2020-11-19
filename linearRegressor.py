@@ -56,17 +56,32 @@ data['Humidity'] = (data['Humidity'] - data['Humidity'].min()) / (data['Humidity
 data['Speed'] = (data['Speed'] - data['Speed'].min()) / (data['Speed'].max() - data['Speed'].min())
 data['SunElevation'] = (data['SunElevation'] - data['SunElevation'].min()) / (data['SunElevation'].max() - data['SunElevation'].min())
 
-x = np.array(data.drop(['Radiation'],1))
+# x = np.array(data.drop(['Radiation'],1))
+
+x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
+x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
+x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
+x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x6 = data[['Temperature', 'SunElevation']]
+x7 = data[['Pressure', 'Humidity', 'Speed']]
+
+variations = [x1,x2,x3,x4,x5,x6,x7]
+
+
 y = np.array(data['Radiation'])
 
-x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
-
-linReg= LinearRegression()
-linReg.fit(x_train, y_train)
-linReg_pred = linReg.predict(x_test)
-print('R^2 score '+str(r2_score(y_test, linReg_pred)))
+for x in variations:
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+    linReg= LinearRegression()
+    linReg.fit(x_train, y_train)
+    linReg_pred = linReg.predict(x_test)
+    print(x.head(0))
+    print(r2_score(y_test, linReg_pred))
 
 # example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
 # example = example.reshape(1,-1)
 # prediction = linReg.predict(example)
 # print(prediction)
+
+# ['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation'] -> 0.7944892069004295
