@@ -1,3 +1,4 @@
+from itertools import combinations
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,6 +10,18 @@ from sklearn.model_selection import train_test_split
 from pytz import timezone
 import pytz
 import pprint as pp
+import itertools
+
+import copy
+def combinations(target,data):
+    for i in range(len(data)):
+        new_target = copy.copy(target)
+        new_data = copy.copy(data)
+        new_target.append(data[i])
+        new_data = data[i+1:]
+        combinations(new_target,
+                     new_data)
+
 
 data = pd.read_csv("data/SolarPrediction.csv")
 
@@ -46,23 +59,34 @@ data.drop(['Data','Time','TimeSunRise','TimeSunSet'], inplace=True, axis=1)
 
 results = {}
 
-x1 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'DayOfYear', 'TimeOfDay(s)']]
-x2 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'DayOfYear']]
-x3 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'TimeOfDay(s)']]
-x4 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'TimeOfDay(s)']]
+# x1 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'DayOfYear', 'TimeOfDay(s)']]
+# x2 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'DayOfYear']]
+# x3 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'TimeOfDay(s)']]
+# x4 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'TimeOfDay(s)']]
 
-variations = [x1, x2, x3, x4]
+labels = ['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'Speed', 'DayOfYear', 'TimeOfDay(s)']
+variations = []
+
+variations = combinations(variations,labels)
+
+print(variations)
+
+
+# for i in variations:
+#     print(i)
 
 y = data['Radiation']
 
-for x in variations:
-    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
-    linReg= LinearRegression()
-    linReg.fit(x_train, y_train)
-    linReg_pred = linReg.predict(x_test)
-    results[str(r2_score(y_test, linReg_pred))] = x
+# for x in variations:
+#     data[x]
+#     x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+#     linReg= LinearRegression()
+#     linReg.fit(x_train, y_train)
+#     linReg_pred = linReg.predict(x_test)
+#     results[str(r2_score(y_test, linReg_pred))] = x
+#     print(r2_score(y_test, linReg_pred))
 
 
 #print('R^2 score = '+str(r2_score(y_test, linReg_pred)))
-pp.pprint(results)
+#pp.pprint(results)
 
