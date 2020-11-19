@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import scipy
 from sklearn import preprocessing, model_selection, neighbors
-from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
@@ -43,6 +43,7 @@ data = pd.read_csv("data/SolarPrediction.csv")
 # check for null values
 # print(data.isnull().sum())
 
+# create a new column that combines time with time of sunset/sunrise
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
 data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
 
@@ -61,12 +62,7 @@ y = np.array(data['Radiation'])
 
 x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
 
-linReg= LinearRegression()
-linReg.fit(x_train, y_train)
-linReg_pred = linReg.predict(x_test)
-print('R^2 score '+str(r2_score(y_test, linReg_pred)))
-
-# example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
-# example = example.reshape(1,-1)
-# prediction = linReg.predict(example)
-# print(prediction)
+regressor = neighbors.KNeighborsRegressor(n_neighbors=6)
+regressor.fit(x_train, y_train)
+pred = regressor.predict(x_test)
+print('R^2 score '+ str(r2_score(y_test, pred)))
