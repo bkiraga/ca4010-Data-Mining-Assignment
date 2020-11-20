@@ -49,19 +49,14 @@ hawaii= timezone('Pacific/Honolulu')
 data.index =  pd.to_datetime(data['UNIXTime'], unit='s')
 data.index = data.index.tz_localize(pytz.utc).tz_convert(hawaii)
 data['MonthOfYear'] = data.index.strftime('%m').astype(int)
-data['DayOfYear'] = data.index.strftime('%j').astype(int)
-data['WeekOfYear'] = data.index.strftime('%U').astype(int)
 data['TimeOfDay(h)'] = data.index.hour
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
 data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
 
 
-
 print(data.head())
 
 grouped_m=data.groupby('MonthOfYear').mean().reset_index()
-grouped_w=data.groupby('WeekOfYear').mean().reset_index()
-grouped_d=data.groupby('DayOfYear').mean().reset_index()
 grouped_h=data.groupby('TimeOfDay(h)').mean().reset_index()
 
 f, ((axis1, axis2), (axis3, axis4), (axis5, axis6), (axis7, axis8)) = plt.subplots(4, 2, sharex='col', sharey='row', figsize=(14,12))
@@ -117,7 +112,7 @@ g = sb.barplot(x="MonthOfYear", y='Humidity', data=grouped_m, palette=np.array(p
 
 plt.show()
 
-trainData = data.drop(['TimeOfDay(h)', 'MonthOfYear', 'WeekOfYear'], inplace=False, axis=1)
+trainData = data.drop(['TimeOfDay(h)', 'MonthOfYear'], inplace=False, axis=1)
 
 plt.figure(figsize=(15,15))
 sb.heatmap(trainData.corr(),annot=True,cmap='Spectral')

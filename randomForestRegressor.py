@@ -49,6 +49,7 @@ data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], in
 # remove outlier
 data = data.drop(6465)
 
+
 # x = np.array(data.drop(['Radiation'],1))
 # y = np.array(data['Radiation'])
 
@@ -64,15 +65,17 @@ data = data.drop(6465)
 # prediction = RanForReg.predict(example)
 # print(prediction)
 
-x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
-x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
-x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
-x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
-x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Speed']]
-x6 = data[['Temperature', 'SunElevation']]
-x7 = data[['Pressure', 'Humidity', 'Speed']]
+x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]       # Removed all of them
+x2 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]                                 # Removed Wind direction
+x3 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'SunElevation']]                # Removed Speed
+x4 = data[['Temperature', 'Pressure', 'WindDirection(Degrees)', 'SunElevation']]                            # Removed Humidity
+x5 = data[['Temperature', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]                   # Removed Pressure
+x6 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)']]                       # Removed Sun Elevation
+x7 = data[['Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]                      # Removed Temperature
+x8 = data[['Temperature', 'SunElevation']]                                                                  # Removed Everything except Temperature, SunElevation
+x9 = data[['Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)']]                                      # Removed Temperature, SunElevation
 
-variations = [x1,x2,x3,x4,x5,x6,x7]
+variations = [x1, x2, x3, x4, x5, x6, x7, x8, x9]
 
 
 y = np.array(data['Radiation'])

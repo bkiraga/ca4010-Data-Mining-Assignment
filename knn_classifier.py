@@ -57,7 +57,7 @@ data = pd.read_csv("data/SolarPrediction.csv")
 
 # create a new column that combines time with time of sunset/sunrise
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
-data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet', 'WindDirection(Degrees)'], inplace = True)
+data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
 
 # remove outlier
 data = data.drop(6465)
@@ -67,6 +67,7 @@ data['Temperature'] = (data['Temperature'] - data['Temperature'].min()) / (data[
 data['Pressure'] = (data['Pressure'] - data['Pressure'].min()) / (data['Pressure'].max() - data['Pressure'].min())
 data['Humidity'] = (data['Humidity'] - data['Humidity'].min()) / (data['Humidity'].max() - data['Humidity'].min())
 data['Speed'] = (data['Speed'] - data['Speed'].min()) / (data['Speed'].max() - data['Speed'].min())
+data['WindDirection(Degrees)'] = (data['WindDirection(Degrees)'] - data['WindDirection(Degrees)'].min()) / (data['WindDirection(Degrees)'].max() - data['WindDirection(Degrees)'].min())
 data['SunElevation'] = (data['SunElevation'] - data['SunElevation'].min()) / (data['SunElevation'].max() - data['SunElevation'].min())
 
 max = data['Radiation'].max()
@@ -86,15 +87,17 @@ data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Ra
 
 # print(data.head(10))
 
-x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
-x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
-x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
-x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
-x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Speed']]
-x6 = data[['Temperature', 'SunElevation']]
-x7 = data[['Pressure', 'Humidity', 'Speed']]
+x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]       # Removed all of them
+x2 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]                                 # Removed Wind direction
+x3 = data[['Temperature', 'Pressure', 'Humidity', 'WindDirection(Degrees)', 'SunElevation']]                # Removed Speed
+x4 = data[['Temperature', 'Pressure', 'WindDirection(Degrees)', 'SunElevation']]                            # Removed Humidity
+x5 = data[['Temperature', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]                   # Removed Pressure
+x6 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)']]                       # Removed Sun Elevation
+x7 = data[['Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)', 'SunElevation']]                      # Removed Temperature
+x8 = data[['Temperature', 'SunElevation']]                                                                  # Removed Everything except Temperature, SunElevation
+x9 = data[['Pressure', 'Humidity', 'Speed', 'WindDirection(Degrees)']]                                      # Removed Temperature, SunElevation
 
-variations = [x1,x2,x3,x4,x5,x6,x7]
+variations = [x1, x2, x3, x4, x5, x6, x7, x8, x9]
 
 y = np.array(data['Radiation'])
 
