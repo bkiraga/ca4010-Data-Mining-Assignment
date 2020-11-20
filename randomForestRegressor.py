@@ -68,7 +68,7 @@ x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
 x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
 x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
 x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
-x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Speed']]
 x6 = data[['Temperature', 'SunElevation']]
 x7 = data[['Pressure', 'Humidity', 'Speed']]
 
@@ -82,7 +82,6 @@ for x in variations:
     RanForReg = RandomForestRegressor()
     RanForReg.fit(x_train, y_train)
     RanForReg_pred= RanForReg.predict(x_test)
-    #print(x.head(0))
     print(x.columns)
     print('R^2 score '+ str(r2_score(y_test, RanForReg_pred)))
     print("")
