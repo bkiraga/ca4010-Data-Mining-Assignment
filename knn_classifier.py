@@ -86,17 +86,11 @@ data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Ra
 
 # print(data.head(10))
 
-# example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
-# example = example.reshape(1,-1)
-# prediction = classifier.predict(example)
-# print(prediction)
-
-
 x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
 x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
 x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
 x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
-x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Speed']]
 x6 = data[['Temperature', 'SunElevation']]
 x7 = data[['Pressure', 'Humidity', 'Speed']]
 
@@ -109,8 +103,7 @@ for x in variations:
     classifier = neighbors.KNeighborsClassifier(n_neighbors=6)
     classifier.fit(x_train, y_train)
     accuracy = classifier.score(x_test, y_test)
-    #print(x.head(0))
     print(x.columns)
-    print('R^2 score '+ str(accuracy))
+    print(accuracy)
     print("")
 

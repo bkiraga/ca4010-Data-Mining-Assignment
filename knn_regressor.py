@@ -45,7 +45,7 @@ data = pd.read_csv("data/SolarPrediction.csv")
 
 # create a new column that combines time with time of sunset/sunrise
 data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
-data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
+data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet','WindDirection(Degrees)'], inplace = True)
 
 # remove outlier
 data = data.drop(6465)
@@ -71,7 +71,7 @@ x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
 x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
 x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
 x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
-x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Speed']]
 x6 = data[['Temperature', 'SunElevation']]
 x7 = data[['Pressure', 'Humidity', 'Speed']]
 
@@ -85,7 +85,6 @@ for x in variations:
     regressor = neighbors.KNeighborsRegressor(n_neighbors=6)
     regressor.fit(x_train, y_train)
     pred = regressor.predict(x_test)
-    #print(x.head(0))
     print(x.columns)
     print('R^2 score '+ str(r2_score(y_test, pred)))
     print("")
