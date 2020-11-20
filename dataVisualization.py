@@ -6,8 +6,6 @@ from datetime import datetime
 from pytz import timezone
 import pytz
 
-
-
 def convertHourToSec(time_in_hours):
     sec = time_in_hours[-2:]
     min = time_in_hours[3:5]
