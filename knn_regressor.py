@@ -85,5 +85,7 @@ for x in variations:
     regressor = neighbors.KNeighborsRegressor(n_neighbors=6)
     regressor.fit(x_train, y_train)
     pred = regressor.predict(x_test)
-    print(x.head(0))
+    #print(x.head(0))
+    print(x.columns)
     print('R^2 score '+ str(r2_score(y_test, pred)))
+    print("")

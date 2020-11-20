@@ -7,18 +7,45 @@ from pytz import timezone
 import pytz
 
 
+
+def convertHourToSec(time_in_hours):
+    sec = time_in_hours[-2:]
+    min = time_in_hours[3:5]
+    hour = time_in_hours[:2]
+    if sec[0] == "0":
+        sec = sec[1]
+    if min[0] == "0":
+        min = min[1]
+    if hour[0] == "0":
+        hour = hour[1]
+    sec = int(sec)
+    min = int(min)
+    hour = int(hour)
+
+    return sec + (min*60) + (hour*60*60)
+
+
+def timeAwayFromNight(sunrise, sunset, time):
+    sunrise = convertHourToSec(sunrise)
+    sunset = convertHourToSec(sunset)
+    time = convertHourToSec(time)
+    result = 0
+    midpoint = (sunrise + sunset)/2
+    if time <= sunrise or time >= sunset:
+        result = 0
+    elif time > sunrise and time <= midpoint:
+        result = time - sunrise
+    elif time > midpoint and time < sunset:
+        result = sunset - time
+    return result
+
 data = pd.read_csv("data/SolarPrediction.csv")
+
 # remove outlier
 data = data.drop(6465)
-data = data.sort_values(['UNIXTime'], ascending = [True])
 
-column = data["UNIXTime"]
-max_value = column.max()
-min_value = column.min()
-print(data.loc[data['UNIXTime'] == min_value])
-print(data.loc[data['UNIXTime'] == max_value])
-
-print(data.head())
+# check for null values
+# print(data.isnull().sum())
 
 hawaii= timezone('Pacific/Honolulu')
 data.index =  pd.to_datetime(data['UNIXTime'], unit='s')
@@ -27,17 +54,10 @@ data['MonthOfYear'] = data.index.strftime('%m').astype(int)
 data['DayOfYear'] = data.index.strftime('%j').astype(int)
 data['WeekOfYear'] = data.index.strftime('%U').astype(int)
 data['TimeOfDay(h)'] = data.index.hour
-data['TimeOfDay(m)'] = data.index.hour*60 + data.index.minute
-data['TimeOfDay(s)'] = data.index.hour*60*60 + data.index.minute*60 + data.index.second
-data['TimeSunRise'] = pd.to_datetime(data['TimeSunRise'], format='%H:%M:%S')
-data['TimeSunSet'] = pd.to_datetime(data['TimeSunSet'], format='%H:%M:%S')
-data['DayLength(s)'] = data['TimeSunSet'].dt.hour*60*60 \
-                           + data['TimeSunSet'].dt.minute*60 \
-                           + data['TimeSunSet'].dt.second \
-                           - data['TimeSunRise'].dt.hour*60*60 \
-                           - data['TimeSunRise'].dt.minute*60 \
-                           - data['TimeSunRise'].dt.second
-data.drop(['Data','Time','TimeSunRise','TimeSunSet'], inplace=True, axis=1)
+data['SunElevation'] = data.apply(lambda row: timeAwayFromNight(row.TimeSunRise ,row.TimeSunSet, row.Time), axis=1)
+data.drop(columns = ['UNIXTime', 'Data', 'Time', 'TimeSunRise','TimeSunSet'], inplace = True)
+
+
 
 print(data.head())
 
@@ -99,7 +119,7 @@ g = sb.barplot(x="MonthOfYear", y='Humidity', data=grouped_m, palette=np.array(p
 
 plt.show()
 
-trainData = data.drop(['TimeOfDay(h)', 'TimeOfDay(m)', 'TimeOfDay(s)', 'UNIXTime', 'MonthOfYear', 'WeekOfYear'], inplace=False, axis=1)
+trainData = data.drop(['TimeOfDay(h)', 'MonthOfYear', 'WeekOfYear'], inplace=False, axis=1)
 
 plt.figure(figsize=(15,15))
 sb.heatmap(trainData.corr(),annot=True,cmap='Spectral')

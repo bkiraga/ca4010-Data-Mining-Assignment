@@ -74,19 +74,43 @@ min = data['Radiation'].min()
 data['Radiation'] = data.apply(lambda row: rankSolarRadiationtoCategories(row.Radiation, min, max), axis=1)
 
 
-x = np.array(data.drop(['Radiation'],1))
-y = np.array(data['Radiation'])
+# x = np.array(data.drop(['Radiation'],1))
+# y = np.array(data['Radiation'])
 
-x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+# x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
 
-classifier = neighbors.KNeighborsClassifier(n_neighbors=6)
-classifier.fit(x_train, y_train)
-accuracy = classifier.score(x_test, y_test)
-print(accuracy)
+# classifier = neighbors.KNeighborsClassifier(n_neighbors=6)
+# classifier.fit(x_train, y_train)
+# accuracy = classifier.score(x_test, y_test)
+# print(accuracy)
 
-print(data.head(10))
+# print(data.head(10))
 
 # example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
 # example = example.reshape(1,-1)
 # prediction = classifier.predict(example)
 # print(prediction)
+
+
+x1 = data[['Temperature', 'Pressure', 'Humidity', 'Speed', 'SunElevation']]
+x2 = data[['Temperature', 'Pressure', 'Humidity', 'SunElevation']]
+x3 = data[['Temperature', 'Humidity', 'Speed', 'Pressure']]
+x4 = data[['Temperature', 'Speed', 'SunElevation', 'Humidity']]
+x5 = data[['Temperature', 'SunElevation', 'Pressure', 'Humidity',]]
+x6 = data[['Temperature', 'SunElevation']]
+x7 = data[['Pressure', 'Humidity', 'Speed']]
+
+variations = [x1,x2,x3,x4,x5,x6,x7]
+
+y = np.array(data['Radiation'])
+
+for x in variations:
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2)
+    classifier = neighbors.KNeighborsClassifier(n_neighbors=6)
+    classifier.fit(x_train, y_train)
+    accuracy = classifier.score(x_test, y_test)
+    #print(x.head(0))
+    print(x.columns)
+    print('R^2 score '+ str(accuracy))
+    print("")
+

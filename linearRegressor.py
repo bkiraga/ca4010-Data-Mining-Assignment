@@ -77,7 +77,7 @@ for x in variations:
     linReg.fit(x_train, y_train)
     linReg_pred = linReg.predict(x_test)
     print(x.head(0))
-    print(r2_score(y_test, linReg_pred))
+    print('R^2 score '+ +str(r2_score(y_test, linReg_pred)))
 
 # example = np.array([50, 30.65, 60, 311.67, 3.2, 11826])
 # example = example.reshape(1,-1)
